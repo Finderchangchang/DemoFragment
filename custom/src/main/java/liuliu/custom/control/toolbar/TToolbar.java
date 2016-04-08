@@ -31,7 +31,7 @@ public class TToolbar extends LinearLayout {
     int bg_color;
     float toolbar_elevation;
     String center_title_str;
-    String left_title_str;
+    String left_title_str = "";
     String right_title_str;
     boolean left_user_visible;
     boolean left_clickable;
@@ -144,15 +144,13 @@ public class TToolbar extends LinearLayout {
             });
         }
 
-        if (left_title_str != null)
-
-        {
-            left_title.setVisibility(VISIBLE);
-            left_title.setText(left_title_str);
-        } else
-
-        {
-            left_title.setVisibility(GONE);
+        if (left_title_str != null) {
+            if (left_title_str.equals("")) {
+                left_title.setVisibility(GONE);
+            } else {
+                left_title.setVisibility(VISIBLE);
+                left_title.setText(left_title_str);
+            }
         }
         //设置左侧右侧图片显示以及点击事件
         if (left_img_int != 0 || left_user_visible)
