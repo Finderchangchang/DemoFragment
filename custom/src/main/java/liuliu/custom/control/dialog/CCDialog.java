@@ -13,7 +13,7 @@ import liuliu.custom.R;
 /**
  * Created by Administrator on 2015/10/16.
  */
-public class CCDialog extends android.app.Dialog {
+public class CCDialog extends Dialog {
     TextView title;
     Button ensure_btn, cancel_btn;
     EditText middle_et;

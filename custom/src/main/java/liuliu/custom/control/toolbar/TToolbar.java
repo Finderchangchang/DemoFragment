@@ -153,9 +153,7 @@ public class TToolbar extends LinearLayout {
             }
         }
         //设置左侧右侧图片显示以及点击事件
-        if (left_img_int != 0 || left_user_visible)
-
-        {
+        if (left_img_int != 0 || left_user_visible) {
             left_ll.setVisibility(VISIBLE);
             if (left_img_int != 0) {
                 setLeftImg(left_img_int);
@@ -177,26 +175,18 @@ public class TToolbar extends LinearLayout {
                     }
                 });
             }
-        } else
-
-        {
+        } else {
             left_ll.setVisibility(GONE);
         }
 
-        if (right_img_int != 0)
-
-        {
+        if (right_img_int != 0) {
             right_img.setVisibility(VISIBLE);
             setRightImg(right_img_int);
-        } else
-
-        {
+        } else {
             right_img.setVisibility(GONE);
         }
 
-        if (center_clickable)
-
-        {
+        if (center_clickable) {
             center_rl.setClickable(true);
             center_rl.setOnClickListener(new OnClickListener() {
                 @Override
