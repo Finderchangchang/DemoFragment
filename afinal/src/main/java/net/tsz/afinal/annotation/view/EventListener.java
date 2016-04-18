@@ -4,6 +4,8 @@ package net.tsz.afinal.annotation.view;
  * Created by LiuWeiJie on 2015/7/25 0025.
  * Email:1031066280@qq.com
  */
+
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -11,7 +13,9 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
+
 import java.lang.reflect.Method;
+
 import net.tsz.afinal.exception.ViewException;
 
 public class EventListener implements OnClickListener, OnLongClickListener, OnItemClickListener, OnItemSelectedListener, OnItemLongClickListener {
@@ -82,14 +86,14 @@ public class EventListener implements OnClickListener, OnLongClickListener, OnIt
     }
 
     private static Object invokeClickMethod(Object handler, String methodName, Object... params) {
-        if(handler == null) {
+        if (handler == null) {
             return null;
         } else {
             Method method = null;
 
             try {
                 method = handler.getClass().getDeclaredMethod(methodName, new Class[]{View.class});
-                if(method != null) {
+                if (method != null) {
                     return method.invoke(handler, params);
                 } else {
                     throw new ViewException("no such method:" + methodName);
@@ -102,16 +106,16 @@ public class EventListener implements OnClickListener, OnLongClickListener, OnIt
     }
 
     private static boolean invokeLongClickMethod(Object handler, String methodName, Object... params) {
-        if(handler == null) {
+        if (handler == null) {
             return false;
         } else {
             Method method = null;
 
             try {
                 method = handler.getClass().getDeclaredMethod(methodName, new Class[]{View.class});
-                if(method != null) {
+                if (method != null) {
                     Object e = method.invoke(handler, params);
-                    return e == null?false:Boolean.valueOf(e.toString()).booleanValue();
+                    return e == null ? false : Boolean.valueOf(e.toString()).booleanValue();
                 } else {
                     throw new ViewException("no such method:" + methodName);
                 }
@@ -123,14 +127,14 @@ public class EventListener implements OnClickListener, OnLongClickListener, OnIt
     }
 
     private static Object invokeItemClickMethod(Object handler, String methodName, Object... params) {
-        if(handler == null) {
+        if (handler == null) {
             return null;
         } else {
             Method method = null;
 
             try {
                 method = handler.getClass().getDeclaredMethod(methodName, new Class[]{AdapterView.class, View.class, Integer.TYPE, Long.TYPE});
-                if(method != null) {
+                if (method != null) {
                     return method.invoke(handler, params);
                 } else {
                     throw new ViewException("no such method:" + methodName);
@@ -143,16 +147,16 @@ public class EventListener implements OnClickListener, OnLongClickListener, OnIt
     }
 
     private static boolean invokeItemLongClickMethod(Object handler, String methodName, Object... params) {
-        if(handler == null) {
+        if (handler == null) {
             throw new ViewException("invokeItemLongClickMethod: handler is null :");
         } else {
             Method method = null;
 
             try {
                 method = handler.getClass().getDeclaredMethod(methodName, new Class[]{AdapterView.class, View.class, Integer.TYPE, Long.TYPE});
-                if(method != null) {
+                if (method != null) {
                     Object e = method.invoke(handler, params);
-                    return Boolean.valueOf(e == null?false:Boolean.valueOf(e.toString()).booleanValue()).booleanValue();
+                    return Boolean.valueOf(e == null ? false : Boolean.valueOf(e.toString()).booleanValue()).booleanValue();
                 } else {
                     throw new ViewException("no such method:" + methodName);
                 }
@@ -164,14 +168,14 @@ public class EventListener implements OnClickListener, OnLongClickListener, OnIt
     }
 
     private static Object invokeItemSelectMethod(Object handler, String methodName, Object... params) {
-        if(handler == null) {
+        if (handler == null) {
             return null;
         } else {
             Method method = null;
 
             try {
                 method = handler.getClass().getDeclaredMethod(methodName, new Class[]{AdapterView.class, View.class, Integer.TYPE, Long.TYPE});
-                if(method != null) {
+                if (method != null) {
                     return method.invoke(handler, params);
                 } else {
                     throw new ViewException("no such method:" + methodName);
@@ -184,14 +188,14 @@ public class EventListener implements OnClickListener, OnLongClickListener, OnIt
     }
 
     private static Object invokeNoSelectMethod(Object handler, String methodName, Object... params) {
-        if(handler == null) {
+        if (handler == null) {
             return null;
         } else {
             Method method = null;
 
             try {
                 method = handler.getClass().getDeclaredMethod(methodName, new Class[]{AdapterView.class});
-                if(method != null) {
+                if (method != null) {
                     return method.invoke(handler, params);
                 } else {
                     throw new ViewException("no such method:" + methodName);

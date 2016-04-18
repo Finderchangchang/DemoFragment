@@ -3,35 +3,107 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#40445D"
     android:gravity="center_horizontal"
-    android:orientation="vertical"
-    android:background="@color/cadetblue">
+    android:orientation="vertical">
 
     <liuliu.custom.control.toolbar.TToolbar
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        app:left_img="@mipmap/back_main"
-        app:center_title="登录"/>
+        app:center_title="登录"
+        app:left_img="@mipmap/back_main" />
 
-    <EditText
-        android:id="@+id/name_et"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp" />
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="15dp">
 
-    <EditText
-        android:id="@+id/password_et"
-        android:layout_width="match_parent"
-        android:layout_height="50dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/login_btn"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="登录" />
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@mipmap/login_user" />
 
-    <in.srain.cube.image.CubeImageView
-        android:id="@+id/user_img_civ"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_gravity="center" />
+            <liuliu.custom.control.edittext.ClearEditText
+                android:id="@+id/name_et"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="@string/qing_shuru_zhanghao" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@mipmap/login_lock" />
+
+            <liuliu.custom.control.edittext.ClearEditText
+                android:id="@+id/password_et"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="@string/please_enter_pwd"
+                android:password="true" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/error_pwd_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="35dp"
+                android:text="@string/pwd_error_please_enter_again"
+                android:textColor="@color/colorPrimary"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:text="@string/kuaisu_zhuce"
+                    android:textColor="@color/colorPrimary" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="@string/wangji_mima" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/login_btn"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/btn_login_click"
+            android:text="登录"
+            android:textSize="20sp" />
+
+        <in.srain.cube.image.CubeImageView
+            android:id="@+id/user_img_civ"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center" />
+    </LinearLayout>
 </LinearLayout>

@@ -6,4 +6,5 @@ package liuliu.demofragment.config;
  * 邮箱：1031066280@qq.com
  */
 public class Config {
+    public static final String QQ_APPID = "1104852415";
 }

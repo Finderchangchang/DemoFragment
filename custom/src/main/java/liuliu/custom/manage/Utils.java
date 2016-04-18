@@ -1,4 +1,4 @@
-package liuliu.custom.method;
+package liuliu.custom.manage;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -12,12 +12,14 @@ import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -26,11 +28,11 @@ import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,10 +41,8 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
@@ -58,15 +58,18 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 import liuliu.custom.R;
+import liuliu.custom.control.dialog.HHDialog;
 import liuliu.custom.control.toast.RadiusToast;
 import liuliu.custom.method.xml.Jxml;
 
+/**
+ *
+ */
 public class Utils {
     static Context mContext;
 
@@ -76,6 +79,25 @@ public class Utils {
 
     public void setText(TextView textView, String val) {
         setText(textView, val, "");
+    }
+
+
+    /**
+     * 设置全屏
+     *
+     * @param window Activity.getWindow()
+     */
+    public void setScreenFull(Window window) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
+                    | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(Color.TRANSPARENT);
+            window.setNavigationBarColor(Color.TRANSPARENT);
+        }
     }
 
     /**
@@ -89,6 +111,37 @@ public class Utils {
         return val.substring(0, length) + "...";
     }
 
+    /**
+     * 设置自定义Dialog的宽度
+     *
+     * @param width  dialog的宽度值
+     * @param height dialog的高度
+     * @param dialog 自定义Dialog
+     * @return 设置完宽度的Dialog
+     */
+    public static HHDialog setDialogWidth(int width, int height, HHDialog dialog) {
+        WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
+        if (width != 0) {
+            params.width = width;
+        }
+        if (height != 0) {
+            params.height = 0;
+        }
+        dialog.getWindow().setAttributes(params);
+        return dialog;
+    }
+
+    /**
+     * 设置自定义Dialog的宽度
+     *
+     * @param width  dialog的宽度值
+     * @param dialog 自定义Dialog
+     * @return 设置完宽度的Dialog
+     */
+    public static HHDialog setDialogWidth(int width, HHDialog dialog) {
+        return setDialogWidth(width, 0, dialog);
+    }
+
     public static Bitmap readBitMap(Context context, int resId) {
         BitmapFactory.Options opt = new BitmapFactory.Options();
         opt.inPreferredConfig = Bitmap.Config.RGB_565;
@@ -99,34 +152,6 @@ public class Utils {
         return BitmapFactory.decodeStream(is, null, opt);
     }
 
-    /**
-     * 加载当前时间。
-     * 1.同一年的显示格式 05-11  07:45
-     * 2.前一年或者更多格式 2015-11-12
-     *
-     * @param old
-     * @return 需要显示的处理结果
-     */
-    public static String loadTime(String old) {
-        String old_year = old.substring(0, 4);//获得old里面的年
-        String now_year = new SimpleDateFormat("yyyy").format(new Date()).substring(0, 4);//获得当前的年
-        if (old_year.equals(now_year)) {//两者为同一年
-            return old.substring(5, 16);
-        } else {
-            return old.substring(0, 10);
-        }
-    }
-
-    /**
-     * 获得当前系统时间
-     *
-     * @return 2015-11-12 04：35：12
-     */
-    public static String getRealTime() {
-        Date date = new Date();
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return format.format(date);
-    }
 
     /**
      * 证件号码进行sha1加密
@@ -134,7 +159,7 @@ public class Utils {
      * @param val
      * @return
      */
-    public String stringToSha1(String val) {
+    public String strToSHA1(String val) {
         String s = "";
         try {
             MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
@@ -157,87 +182,12 @@ public class Utils {
         return s;
     }
 
-    //当前坐标
-    public Location getLocation() {
-        LocationManager locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
-
-        Location location = null;
-        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            locationManager.requestLocationUpdates(
-                    LocationManager.GPS_PROVIDER, 1000, 10, locationListener);
-            location = locationManager
-                    .getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            if (location == null) {
-                location = new Location(LocationManager.GPS_PROVIDER);
-                location.setLatitude(0);
-                location.setLongitude(0);
-                location.setAltitude(0);
-            }
-        } else {
-            locationManager.requestLocationUpdates(
-                    LocationManager.NETWORK_PROVIDER, 1000, 10,
-                    locationListener);
-            location = locationManager
-                    .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            if (location == null) {
-                location = new Location(LocationManager.NETWORK_PROVIDER);
-                location.setLatitude(0);
-                location.setLongitude(0);
-                location.setAltitude(0);
-            }
-        }
-        return location;
-    }
-
-    LocationListener locationListener = new LocationListener() {
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-
-        }
-
-        @Override
-        public void onProviderEnabled(String provider) {
-
-        }
-
-        @Override
-        public void onProviderDisabled(String provider) {
-
-        }
-
-        @Override
-        public void onLocationChanged(Location location) {
-            if (location != null) {
-                // TODO Auto-generated method stub
-                double latitude = location.getLatitude(); // 纬度
-                double longitude = location.getLongitude(); // 经度
-                Log.i("" + latitude, "" + longitude);
-            } else {
-                System.out.println("空！！");
-            }
-        }
-    };
-
-    //得到手机的imei
+    //得到手机的imei码
     public static String getImei(Context context) {
-        // return "357897047649338";
         return ((TelephonyManager) context
                 .getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
     }
 
-    //date(20150101) ==date
-    public static Date changeDate(String datestr) {
-        datestr = datestr.substring(5, 14);
-        return StringToDate(datestr);
-    }
-
-    //2015年05月09日
-    public static String changDatetoGeshi(String date) {
-        date = date.replace("年", "-");
-        date = date.replace("月", "-");
-        date = date.replace("日", " ");
-        return date;
-    }
 
     public String saveTmpFile(String text) {
         String path = "";
@@ -291,16 +241,6 @@ public class Utils {
         }
     }
 
-    //省内存的方式读取本地资源的图片
-    public static Bitmap readBitmap(Context context, int resid) {
-        BitmapFactory.Options opt = new BitmapFactory.Options();
-        opt.inPreferredConfig = Bitmap.Config.RGB_565;
-        opt.inPurgeable = true;
-        opt.inInputShareable = true;
-        //获取资源图片
-        InputStream is = context.getResources().openRawResource(resid);
-        return BitmapFactory.decodeStream(is, null, opt);
-    }
 
     private long exitTime = 0;
 
@@ -379,11 +319,6 @@ public class Utils {
         if (text.equals("null"))
             return "";
         return text;
-        /*
-         * if(Utils.isEmptyString(text)) return "";
-		 *
-		 * return URLEncoder.encode(text);
-		 */
     }
 
     public void exit(OnExitListener listener) {
@@ -424,27 +359,22 @@ public class Utils {
                 .getExternalStorageState());
     }
 
+    /**
+     * 代码设置布局的Margin
+     *
+     * @param width
+     * @param height
+     * @param left
+     * @param top
+     * @param right
+     * @param bottom
+     * @return 设置完成以后的布局
+     */
     public LinearLayout.LayoutParams setMargin(int width, int height, int left, int top, int right, int bottom) {
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 width, height);
         lp.setMargins(left, top, right, bottom);
         return lp;
-    }
-
-    static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-    /*根据String类型的time转化为Date类型*/
-    public static Date StringToDate(String time) {
-        try {
-            return sdf.parse(time);
-        } catch (java.text.ParseException e) {
-            return null;
-        }
-    }
-
-    /*将Date转化为String类型*/
-    public static String DateToString(Date date) {
-        return sdf.format(date);
     }
 
     /*自定义加载条*/
@@ -458,72 +388,10 @@ public class Utils {
         return progressDialog;
     }
 
-    public boolean fillTestData() {
-        return false;
-    }
-
     public String createGUID() {
         return UUID.randomUUID().toString();
     }
 
-    public double getDouble(TextView view) {
-        if (view == null)
-            return 0;
-
-        try {
-            return Double.parseDouble(view.getText().toString());
-        } catch (Exception e) {
-        }
-        return 0;
-    }
-
-    public int getInt(TextView view) {
-        if (view == null)
-            return 0;
-
-        try {
-            return Integer.parseInt(view.getText().toString());
-        } catch (Exception e) {
-        }
-
-        return 0;
-    }
-
-    public int getInt(Spinner view) {
-        if (view == null)
-            return 0;
-
-        try {
-            return view.getSelectedItemPosition();
-        } catch (Exception e) {
-        }
-
-        return -1;
-    }
-
-    public String getString(TextView view) {
-        if (view == null)
-            return "";
-
-        try {
-            return view.getText().toString();
-        } catch (Exception e) {
-        }
-
-        return "";
-    }
-
-    public String getString(Spinner view) {
-        if (view == null)
-            return "";
-
-        try {
-            return view.toString();
-        } catch (Exception e) {
-        }
-
-        return "";
-    }
 
     public static String Preferences_name = "BULKGASOLINE";
 
@@ -534,7 +402,6 @@ public class Utils {
         } else {
             return "";
         }
-
     }
 
     public int getScannerWidth() {
@@ -547,7 +414,7 @@ public class Utils {
         return windowManager.getDefaultDisplay().getHeight();
     }
 
-    public static void WriteString(String key, String value) {
+    public static void writeString(String key, String value) {
         SharedPreferences sp = getSharedPreferences();
         Editor editor = sp.edit();
         editor.putString(key, value);
@@ -559,17 +426,15 @@ public class Utils {
         return sp.getInt(key, 0);
     }
 
-    public void WriteInt(String key, int value) {
+    public void writeInt(String key, int value) {
         SharedPreferences sp = getSharedPreferences();
-        // 锟斤拷锟斤拷锟斤拷锟斤拷
         Editor editor = sp.edit();
         editor.putInt(key, value);
         editor.commit();
     }
 
-    public void WriteBoolean(String key, boolean value) {
+    public void writeBoolean(String key, boolean value) {
         SharedPreferences sp = getSharedPreferences();
-        // 锟斤拷锟斤拷锟斤拷锟斤拷
         Editor editor = sp.edit();
         editor.putBoolean(key, value);
         editor.commit();
@@ -580,13 +445,11 @@ public class Utils {
         return sp.getStringSet(key, new LinkedHashSet<String>());
     }
 
-    public void WriteStringSet(String key,
+    public void writeStringSet(String key,
                                Set<String> value) {
         SharedPreferences sp = getSharedPreferences();
-        // 锟斤拷锟斤拷锟斤拷锟斤拷
         Editor editor = sp.edit();
         editor.putStringSet(key, value);
-
         editor.commit();
     }
 
@@ -606,24 +469,13 @@ public class Utils {
 
     public Uri startCamra(int requestCode) {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // 锟斤拷锟斤拷锟斤拷锟角诧拷锟斤拷一锟斤拷锟斤拷锟捷ｏ拷ContentValues锟斤拷锟斤拷锟斤拷希锟斤拷锟斤拷锟斤拷锟斤拷录锟斤拷锟斤拷锟斤拷时锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷息
-        // 锟斤拷些锟斤拷锟捷碉拷锟斤拷锟斤拷锟窖撅拷锟斤拷为锟斤拷锟斤拷锟斤拷MediaStore.Images.Media锟斤拷,锟叫的存储锟斤拷MediaStore.MediaColumn锟斤拷锟斤拷
-        // ContentValues values = new ContentValues();
-
         ContentValues values = new ContentValues(3);
         values.put(MediaStore.Images.Media.DISPLAY_NAME, "testing");
         values.put(MediaStore.Images.Media.DESCRIPTION, "this is description");
         values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
-
-        // Uri uri =
-        // context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-        // values);
         Uri uri = Uri.fromFile(new File(getDataPath() + "/temp/"
                 + System.currentTimeMillis() + ".tmp"));
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri); // 锟斤拷锟斤拷锟酵斤拷锟侥硷拷锟侥存储锟斤拷式锟斤拷uri指锟斤拷锟斤拷锟斤拷Camera应锟斤拷锟斤拷
-
-        // 锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷要锟斤拷锟斤拷锟斤拷Camera锟襟，匡拷锟皆凤拷锟斤拷Camera锟斤拷取锟斤拷锟斤拷图片锟斤拷
-        // 锟斤拷锟皆ｏ拷锟斤拷锟斤拷使锟斤拷startActivityForResult锟斤拷锟斤拷锟斤拷Camera
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
         mContext.startActivity(intent);
         return uri;
     }
@@ -643,7 +495,7 @@ public class Utils {
     }
 
     /**
-     * 锟斤拷锟斤拷锟街碉拷锟斤拷息
+     * 加载字典信息
      */
     public boolean loadCodes(String codeName,
                              ArrayList<String> codeKeys, ArrayList<String> codeValues) {
@@ -716,7 +568,7 @@ public class Utils {
     }
 
     public void writeCodes(String codeName, String xml) {
-        WriteString(codeName, xml);
+        writeString(codeName, xml);
     }
 
     public boolean parseOperatorXml(String content,
@@ -761,15 +613,6 @@ public class Utils {
         return false;
     }
 
-    public String getTimeString() {
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return df.format(new Date());
-    }
-
-    public String getCSTimeString() {
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return df.format(new Date()).replace(" ", "T");
-    }
 
     public static String encodeImageView(ImageView imageview) {
         String imageString = "";
@@ -797,21 +640,6 @@ public class Utils {
         return "";
     }
 
-    public static Bitmap getBitmapByte(String str) {
-//        Bitmap bitmap;
-//        byte[] s = Base64.encode(str.getBytes(), Base64.DEFAULT);
-//        bitmap = BitmapFactory.decodeByteArray(s, 0, s.length);
-//        return bitmap;
-        try {
-            byte[] buffer = Base64.decode(str.getBytes(), Base64.DEFAULT);
-            if (buffer != null && buffer.length > 0) {
-                return BitmapFactory.decodeByteArray(buffer, 0, buffer.length);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
     public String XMlEncode(String strData) {
         if (strData == null)
@@ -891,7 +719,7 @@ public class Utils {
         try {
             bitmap = BitmapFactory.decodeFile(filePath, opts);
         } catch (Exception e) {
-            // TODO: handle exception
+
         }
         return bitmap;
     }
@@ -935,137 +763,26 @@ public class Utils {
 
     private Bitmap previewBitmap = null;
 
-    public void setPreviewBitmap(Bitmap bitmap) {
-        previewBitmap = bitmap;
-    }
-
-    public Bitmap getPreviewBitmap() {
-        return previewBitmap;
-    }
-
     public static boolean isEmptyString(String str) {
-        return (str == null || str.length() == 0);
+        return str == null || str.length() == 0;
     }
 
-    public Boolean getJsonBoolean(JSONObject object, String name) {
-        try {
-            return object.getBoolean(name);
-        } catch (JSONException e) {
-            return false;
-        }
+    public interface onPutListener {
+        void post(Intent intent);
     }
 
-    public static String getJsonString(JSONObject object, String name) {
-        try {
-            return object.getString(name);
-        } catch (JSONException e) {
-            return "";
-        }
-    }
-
-    public int getJsonInt(JSONObject object, String name) {
-        try {
-            return object.getInt(name);
-        } catch (JSONException e) {
-            return 0;
-        }
-    }
-
-    public static String getJsonDate(JSONObject object, String name) {
-        try {
-            return getDateString(object.getString(name));
-        } catch (JSONException e) {
-            return "";
-        }
-    }
-
-    public static String getDateString(String text) {
-        // /Date(1361431509843)/
-        try {
-            if (!isEmptyString(text)) {
-                text = text.replace("/", "");
-                text = text.replace("\\", "");
-                text = text.replace("Date", "");
-                text = text.replace("(", "");
-                text = text.replace(")", "");
-                SimpleDateFormat formatter = new SimpleDateFormat(
-                        "yyyy-MM-dd HH:mm:ss");
-                return formatter.format(new Date(Long.valueOf(text)));
-            }
-        } catch (Exception e) {
-
-        }
-        return "";
-    }
-
-    /**
-     * 获得当前系统时间
-     *
-     * @return 格式为yyyyMMdd的时间
-     */
-    public static String getTodayString() {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
-        return formatter.format(new Date());
-    }
-
-    /**
-     * 获得当前系统完整时间
-     *
-     * @return 返回完整的时间
-     */
-    public static String getTodayFullString() {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return formatter.format(new Date());
-    }
-
-    public interface putListener {
-        void put(Intent intent);
-    }
-
-    public void IntentPost(Class cla, putListener listener) {
+    public static void intentPost(Class cla, onPutListener listener) {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         intent.setClass(mContext, cla);
         if (listener != null) {
-            listener.put(intent);
+            listener.post(intent);
         }
         mContext.startActivity(intent);
     }
 
-    public void IntentPost(Class cla) {
-        IntentPost(cla, null);
-    }
-
-    //intent=getIntent();name=标识符
-    public Object IntentGet(Intent intent, String name) {
-        return intent.getStringExtra(name);
-    }
-
-    //鑾峰緱鎵嬫満璁惧鐨勭浉鍏充俊鎭�
-    //鏉冮檺<uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    public TelephonyManager getTelephonyManager() {
-        return (TelephonyManager) mContext.getSystemService(mContext.TELEPHONY_SERVICE);
-    }
-
-
-    public void ToastShort(String text) {
-        RadiusToast.makeText(mContext, text, Toast.LENGTH_SHORT).show();
-    }
-
-    //闀挎樉绀鸿嚜瀹氫箟Toast寮瑰嚭妗�
-    public void ToastLong(String text) {
-        RadiusToast.makeText(mContext, text, Toast.LENGTH_LONG).show();
-    }
-
-    /**
-     * 检测Android设备是否支持摄像机
-     */
-    public boolean checkCameraDevice() {
-        if (mContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
-            return true;
-        } else {
-            return false;
-        }
+    public static void intentPost(Class cla) {
+        intentPost(cla, null);
     }
 
     public static Bitmap getimage(Context contxt, String srcPath) {
@@ -1098,7 +815,6 @@ public class Utils {
     }
 
     public static Bitmap compressImage(Bitmap image) {
-
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.JPEG, 100, baos);//质量压缩方法，这里100表示不压缩，把压缩后的数据存放到baos中
         int options = 100;
@@ -1113,11 +829,6 @@ public class Utils {
     }
 
     public static boolean checkBluetooth(Activity context, int requestCode) {
-        /*
-         * Intent serverIntent = new Intent(context, DeviceListActivity.class);
-		 * context.startActivity(serverIntent); return true;
-		 */
-
         boolean result = true;
         BluetoothAdapter ba = BluetoothAdapter.getDefaultAdapter();
         if (null != ba) {

@@ -1,11 +1,10 @@
 package liuliu.demofragment.base;
 
 import android.os.Bundle;
-import android.os.StrictMode;
 
 import net.tsz.afinal.BActivity;
-import net.tsz.afinal.FinalActivity;
-import net.tsz.afinal.FinalDb;
+
+import cn.bmob.v3.Bmob;
 
 /**
  * BaseActivity声明相关通用方法
@@ -14,14 +13,10 @@ import net.tsz.afinal.FinalDb;
  * Email:1031066280@qq.com
  */
 public abstract class BaseActivity extends BActivity {
-    public FinalDb finalDb;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        finalDb = FinalDb.create(this);
         initViews();
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
         initEvents();
     }
 

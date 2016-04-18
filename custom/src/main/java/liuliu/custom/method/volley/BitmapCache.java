@@ -4,9 +4,9 @@ import android.graphics.Bitmap;
 import android.support.v4.util.LruCache;
 import android.util.Log;
 
-import com.android.volley.toolbox.ImageLoader.ImageCache;
-
-public class BitmapCache implements ImageCache {
+//import com.android.volley.toolbox.ImageLoader.ImageCache;
+//implements ImageCache
+public class BitmapCache{
 	// 如果想让整个项目共用一个图片缓存,那么这里可以将mCache设置成静态
 	private LruCache<String, Bitmap> mCache;
 
@@ -23,14 +23,14 @@ public class BitmapCache implements ImageCache {
 		}
 	}
 
-	@Override
-	public Bitmap getBitmap(String url) {
-		return mCache.get(url);
-	}
-
-	@Override
-	public void putBitmap(String url, Bitmap bitmap) {
-		mCache.put(url, bitmap);
-		Log.d(getClass().getSimpleName(), "cacheSize/maxSize:" + mCache.size() + "/" + mCache.maxSize());
-	}
+//	@Override
+//	public Bitmap getBitmap(String url) {
+//		return mCache.get(url);
+//	}
+//
+//	@Override
+//	public void putBitmap(String url, Bitmap bitmap) {
+//		mCache.put(url, bitmap);
+//		Log.d(getClass().getSimpleName(), "cacheSize/maxSize:" + mCache.size() + "/" + mCache.maxSize());
+//	}
 }

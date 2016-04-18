@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">DemoFragment</string>
+    <string name="qing_shuru_zhanghao">请输入账号/手机号</string>
+    <string name="please_enter_pwd">请输入密码</string>
+    <string name="pwd_error_please_enter_again">密码错误，请重新输入</string>
+    <string name="kuaisu_zhuce">快速注册>></string>
+    <string name="wangji_mima">忘记密码?</string>
+    <string name="denglu_chenggong">登录成功</string>
+    <string name="denglu_shibai">登录失败</string>
 </resources>

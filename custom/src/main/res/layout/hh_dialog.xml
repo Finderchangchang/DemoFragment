@@ -22,46 +22,63 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
+        android:layout_height="220dp"
         android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/center_sure_iv"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:src="@mipmap/dialog_queding" />
-
-        <TextView
-            android:id="@+id/normal_big_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:text="删除成功"
-            android:textColor="#010101"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/normal_small_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:paddingBottom="15dp"
-            android:text="点击获取报名凭证"
-            android:textColor="#010101"
-            android:textSize="16sp" />
-
-        <Button
-            android:id="@+id/sure_click_btn"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginBottom="15dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="-5dp"
-            android:background="@drawable/btn_no_radius_click"
-            android:text="查看报名结果"
-            android:textColor="@color/white"
-            android:textSize="20sp" />
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/center_sure_iv"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginTop="-20dp"
+                android:src="@mipmap/dialog_queding" />
+
+            <TextView
+                android:id="@+id/normal_big_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="删除成功"
+                android:textColor="#010101"
+                android:textSize="22sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/all_bottom_ll"
+            android:layout_width="match_parent"
+            android:layout_height="87dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="-30dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/normal_small_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="哈哈"
+                android:textColor="#010101"
+                android:textSize="16sp"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/sure_click_btn"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/btn_no_radius_click"
+                android:text="确定"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:visibility="gone" />
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

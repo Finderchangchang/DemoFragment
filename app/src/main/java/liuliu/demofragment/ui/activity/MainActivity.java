@@ -1,7 +1,8 @@
-package liuliu.demofragment.activity;
+package liuliu.demofragment.ui.activity;
 
 import liuliu.demofragment.R;
 import liuliu.demofragment.base.BaseActivity;
+import liuliu.demofragment.config.Key;
 
 /**
  * 首页
@@ -16,6 +17,6 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void initEvents() {
-
+        String name = getIntent().getStringExtra(Key.LOGIN_USER_NAME);
     }
 }
