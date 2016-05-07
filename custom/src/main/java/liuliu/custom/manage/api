@@ -1,2 +1,31 @@
 1.生成缩略图方法
     ThumbnailUtils.extractThumbnail(bitmap, 100, 100);
+2.ListView具体的滑动距离
+    public int getScrollY(ListView mView) {
+          View c = mView.getChildAt(0);
+          if (c == null) {
+              return 0;
+          }
+          int firstVisiblePosition = mView.getFirstVisiblePosition();
+          int top = c.getTop();
+          return -top + firstVisiblePosition * c.getHeight();
+    }
+ 3.监听ListView的滚动事件
+    ListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(AbsListView view, int scrollState) {
+               if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {//不滚动的时候
+                      if (congye_lv.getChildAt(0).getTop() != 0) {//说明ListView滚动了
+
+                      } else if (congye_lv.getChildAt(0).getTop() == 0) {//滚动到最顶部
+
+                      }
+               }
+        }
+        @Override
+        public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+        }
+    });
+ 4.listview里面装了别的组件导致item点击无效问题的解决方案
+   在Item布局的根布局加上android:descendantFocusability="blocksDescendants"的属性就好了。

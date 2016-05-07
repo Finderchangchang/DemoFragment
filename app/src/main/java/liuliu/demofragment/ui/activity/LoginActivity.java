@@ -2,7 +2,9 @@ package liuliu.demofragment.ui.activity;
 
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tencent.tauth.Tencent;
@@ -46,6 +48,8 @@ public class LoginActivity extends BaseActivity implements ILoginView {
     @CodeNote(id = R.id.error_pwd_tv)
     TextView error_pwd_tv;
     LoginListener mLogin;
+    @CodeNote(id = R.id.line_test_ll)
+    LinearLayout line_test_ll;
 
     @Override
     public void initViews() {
@@ -77,34 +81,33 @@ public class LoginActivity extends BaseActivity implements ILoginView {
 
                     @Override
                     public void onSuccess(JSONObject userAuth) {
-                        // TODO Auto-generated method stub
 
                     }
 
                     @Override
                     public void onFailure(int code, String msg) {
-                        // TODO Auto-generated method stub
                         Log.i("smile", "第三方登陆失败：" + msg);
                     }
 
                 });
                 break;
             case R.id.user_img_civ:
-                UserModel user = new UserModel();
-                user.setU_id("1306020001");
-                user.setU_name("17093215800");
-                user.setU_pwd("123");
-                user.save(this, new SaveListener() {
-                    @Override
-                    public void onSuccess() {
-
-                    }
-
-                    @Override
-                    public void onFailure(int code, String msg) {
-                        Log.i("smile", "错误码：" + code + "，错误描述：" + msg);
-                    }
-                });
+                line_test_ll.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 20));
+//                UserModel user = new UserModel();
+//                user.setU_id("1306020001");
+//                user.setU_name("17093215800");
+//                user.setU_pwd("123");
+//                user.save(this, new SaveListener() {
+//                    @Override
+//                    public void onSuccess() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onFailure(int code, String msg) {
+//                        Log.i("smile", "错误码：" + code + "，错误描述：" + msg);
+//                    }
+//                });
                 break;
         }
     }
